@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Pulse | Health Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+
+  <!-- AppBuilder runtime monitor -->
+  <script>
+    window.onerror = function(msg, src, line, col, err) {
+      try {
+        fetch('http://localhost:3000/api/telemetry/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            appPath: window.location.pathname,
+            errorMsg: msg,
+            source: src,
+            line: line,
+            stackTrace: err ? err.stack : ''
+          })
+        });
+      } catch (_) {}
+      return true; // suppress visual error overlay
+    };
+  </script>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Vital Pulse</h1>
+            <div id="date-display"></div>
+        </header>
+
+        <section id="dashboard">
+            <div class="card main-stat" id="bpm-card">
+                <h3>Heart Rate</h3>
+                <div class="value"><span id="bpm-val">--</span> <small>BPM</small></div>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <h4>Steps</h4>
+                    <p id="steps-val">0</p>
+                </div>
+                <div class="card">
+                    <h4>Hydration</h4>
+                    <p id="water-val">0 <small>L</small></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="input-zone">
+            <button id="add-water">+ Add 250ml Water</button>
+            <button id="log-activity">Log 1000 Steps</button>
+        </section>
+    </div>
+    <script src="app.js" defer></script>
+</body>
+</html>
